@@ -1,11 +1,7 @@
 import { ProductPost } from "@/types/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-type CartItem = {
-  product: ProductPost;
-  quantity: number;
-};
+import { CartItem } from "@/types/types";
 
 type CartState = {
   cart: CartItem[];
@@ -22,9 +18,15 @@ const useCartStore = create<CartState>()(
       cartQuantity: 0,
       addToCart: (product: ProductPost) =>
         set((state) => {
+          if (!product) {
+            console.log("state tidak ada");
+            return state;
+          }
+
           const existingCartItem = state.cart.find(
             (item) => item.product.id === product.id
           );
+
           if (existingCartItem) {
             const updatedCart = state.cart.map((item) => {
               if (item.product.id === product.id) {
@@ -32,6 +34,8 @@ const useCartStore = create<CartState>()(
                   ...item,
                   quantity: item.quantity + 1,
                 };
+              } else {
+                return item;
               }
             });
             return {

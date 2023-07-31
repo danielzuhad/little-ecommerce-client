@@ -4,6 +4,7 @@ import api from "@/api/index";
 import { ProductPost } from "@/types/types";
 import { ProductCard } from "@/components/ProductCard";
 import useCartStore from "@/modules/store";
+import Swal from "sweetalert2";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
@@ -12,6 +13,13 @@ export default function Home() {
 
   const handleAddToCart = (product: ProductPost) => {
     addToCart(product);
+    Swal.fire({
+      position: "center",
+      icon: "success",
+      title: "Product Added",
+      showConfirmButton: false,
+      timer: 1000,
+    });
   };
 
   useEffect(() => {
@@ -37,7 +45,7 @@ export default function Home() {
   }
 
   return (
-    <section className="border-[5px] border-[#9288F8] rounded-lg w-[90vw] bg-[#322653]">
+    <div className="border-[5px] border-[#9288F8] rounded-lg w-[90vw] bg-[#322653]">
       <div className="flex flex-wrap justify-center">
         {products.map((product, index) => (
           <ProductCard
@@ -47,6 +55,6 @@ export default function Home() {
           />
         ))}
       </div>
-    </section>
+    </div>
   );
 }

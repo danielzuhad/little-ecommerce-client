@@ -5,3 +5,8 @@ export type ProductPost = {
   price: number;
   stock: number;
 };
+
+export type CartItem = {
+  product: ProductPost;
+  quantity: number;
+};

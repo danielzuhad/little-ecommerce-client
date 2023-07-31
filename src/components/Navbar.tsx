@@ -10,7 +10,7 @@ export const Navbar = () => {
 
   useEffect(() => {
     setCart(cartQuantity);
-  }, []);
+  }, [cartQuantity]);
 
   return (
     <nav className="bg-[#322653] min-w-[60vw] h-[80px] rounded-md my-3 text-white flex justify-center items-center text-[27px] border-[5px] border-[#9288F8]">

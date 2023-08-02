@@ -26,9 +26,17 @@ export const Navbar = () => {
         <li className="my-2">
           <Link
             className="p-2 border-white border-2 rounded-md hover:bg-blue-300 hover:text-[#292c4b] cursor-pointer active:bg-[#71daf2] focus:outline-none focus:ring focus:ring-[#71daf2]"
-            href="/transaction"
+            href="/history"
           >
-            Transaction
+            History
+          </Link>
+        </li>
+        <li className="my-2">
+          <Link
+            className="p-2 border-white border-2 rounded-md hover:bg-blue-300 hover:text-[#292c4b] cursor-pointer active:bg-[#71daf2] focus:outline-none focus:ring focus:ring-[#71daf2]"
+            href="/cart"
+          >
+            Cart
           </Link>
         </li>
         <li className="flex justify-center items-center ">

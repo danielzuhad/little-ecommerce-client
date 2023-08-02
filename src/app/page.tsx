@@ -37,9 +37,6 @@ export default function Home() {
     fetchProducts();
   }, []);
 
-  console.log(products);
-  console.log(cart);
-
   if (loading) {
     return <div>loading....</div>;
   }

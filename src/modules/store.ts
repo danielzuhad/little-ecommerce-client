@@ -7,8 +7,7 @@ type CartState = {
   cart: CartItem[];
   cartQuantity: number;
   addToCart: (product: ProductPost) => void;
-  removeFromCart: (productId: number) => void;
-  updateQuantity: (productId: number, action: "increase" | "decrease") => void;
+  clearCart: () => void;
 };
 
 const useCartStore = create<CartState>()(
@@ -50,25 +49,11 @@ const useCartStore = create<CartState>()(
           }
         }),
 
-      removeFromCart: (productId: number) =>
-        set((state) => ({
-          cart: state.cart.filter((item) => item.product.id !== productId),
+      clearCart: () =>
+        set(() => ({
+          cart: [],
+          cartQuantity: 0,
         })),
-
-      updateQuantity: (productId: number, action: "increase" | "decrease") =>
-        set((state) => {
-          const updatedCart = state.cart.map((item) => {
-            if (item.product.id === productId) {
-              return {
-                ...item,
-                quantity:
-                  action === "increase" ? item.quantity + 1 : item.quantity - 1,
-              };
-            }
-            return item;
-          });
-          return { cart: updatedCart };
-        }),
     }),
     {
       name: "cart-store",

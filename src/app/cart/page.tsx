@@ -3,13 +3,13 @@ import api from "@/api";
 import { CheckoutButton } from "@/components/CheckoutButton";
 import { ClearButton } from "@/components/ClearButton";
 import { TransactionCard } from "@/components/TransactionCard";
-import useCartStore from "@/modules/store";
+import { useCartStore, useHistoryStore } from "@/modules/store";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 export default function Transaction() {
   const [showChild, setShowChild] = useState<boolean>(false);
-  const [paidAmount, setPaidAmount] = useState<number>();
+  const [paidAmount, setPaidAmount] = useState<number>(0);
   const { cart } = useCartStore();
 
   const postSubmit = async () => {
@@ -24,21 +24,31 @@ export default function Transaction() {
         quantity: item.quantity,
       }));
 
-      const response = await api.post("/transaction/create", {
-        total_price,
-        paid_amount,
-        products,
-      });
-      console.log(total_price);
-      console.log(paid_amount);
-      console.log(products);
-      console.log("Response:", response.data);
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Checkout Succes",
-        showConfirmButton: true,
-      });
+      if (paid_amount > total_price) {
+        const response = await api.post("/transaction/create", {
+          total_price,
+          paid_amount,
+          products,
+        });
+        console.log("Response:", response.data);
+        useCartStore.getState().clearCart();
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Checkout Succes, Check Ur History",
+          showConfirmButton: true,
+        });
+        const responseHistory = await api.get("/transaction");
+        useHistoryStore.getState().updateHistory(responseHistory.data);
+      } else {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Uang Anda Kurang",
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      }
     } catch (error) {
       console.error(error);
     }
@@ -72,7 +82,7 @@ export default function Transaction() {
       )}
 
       {/* Right Side */}
-      <div className="flex flex-col justify-center px-[10px] text-[1.5em] items-center border-2 border-white rounded-md m-3 ">
+      <div className="flex flex-col justify-center px-[10px] text-[1em] items-center border-2 border-white rounded-md m-3 ">
         <div className="flex mb-10">
           Total Harga :{" "}
           {cart.reduce(
@@ -80,13 +90,14 @@ export default function Transaction() {
             0
           )}
         </div>
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center gap-2">
           Total Pembayaran:
           <input
-            value={paidAmount}
+            value={paidAmount === 0 ? "" : paidAmount}
             onChange={(e) => setPaidAmount(parseInt(e.target.value))}
-            className="text-black rounded-md  w-[200px] border  [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none mb-10"
+            className="text-black rounded-md  w-[200px] border  [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none mb-10 p-2"
             type="number"
+            placeholder="Isi Nominal"
           />
         </div>
 

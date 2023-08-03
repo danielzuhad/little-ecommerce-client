@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import api from "@/api/index";
 import { ProductPost } from "@/types/types";
 import { ProductCard } from "@/components/ProductCard";
-import useCartStore from "@/modules/store";
+import { useCartStore } from "@/modules/store";
 import Swal from "sweetalert2";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<ProductPost[] | []>([]);
-  const { addToCart, cart } = useCartStore();
+  const { addToCart } = useCartStore();
 
   const handleAddToCart = (product: ProductPost) => {
     addToCart(product);

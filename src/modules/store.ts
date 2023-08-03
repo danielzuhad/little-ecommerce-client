@@ -1,4 +1,4 @@
-import { ProductPost } from "@/types/types";
+import { HistoryType, ProductPost } from "@/types/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { CartItem } from "@/types/types";
@@ -10,7 +10,33 @@ type CartState = {
   clearCart: () => void;
 };
 
-const useCartStore = create<CartState>()(
+type HistoryState = {
+  history: HistoryType[];
+  updateHistory: (history: HistoryType[]) => void;
+  clearHistory: () => void;
+};
+
+export const useHistoryStore = create<HistoryState>()(
+  persist(
+    (set) => ({
+      history: [],
+      updateHistory: (history: HistoryType[]) =>
+        set((state) => ({
+          history: [...history],
+        })),
+
+      clearHistory: () =>
+        set((state) => ({
+          history: [],
+        })),
+    }),
+    {
+      name: "history-store",
+    }
+  )
+);
+
+export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       cart: [],
@@ -60,5 +86,3 @@ const useCartStore = create<CartState>()(
     }
   )
 );
-
-export default useCartStore;

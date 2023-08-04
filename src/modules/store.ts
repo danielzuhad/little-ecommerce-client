@@ -7,6 +7,7 @@ type CartState = {
   cart: CartItem[];
   cartQuantity: number;
   addToCart: (product: ProductPost) => void;
+  deleteInCart: (productId: number) => void;
   clearCart: () => void;
 };
 
@@ -73,6 +74,21 @@ export const useCartStore = create<CartState>()(
               cartQuantity: state.cartQuantity + 1,
             };
           }
+        }),
+
+      deleteInCart: (productId: number) =>
+        set((state) => {
+          const deletedItem = state.cart.filter(
+            (item) => item.product.id !== productId
+          );
+          const cartQuantity = deletedItem.reduce(
+            (total, item) => total + item.quantity,
+            0
+          );
+          return {
+            cart: deletedItem,
+            cartQuantity,
+          };
         }),
 
       clearCart: () =>

@@ -76,6 +76,9 @@ export default function Transaction() {
               key={index}
               product={item.product}
               quantity={item.quantity}
+              onClick={() =>
+                useCartStore.getState().deleteInCart(item.product.id)
+              }
             />
           ))}
         </div>

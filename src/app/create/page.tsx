@@ -1,12 +1,62 @@
 "use client";
-import React, { useState } from "react";
+import api from "@/api";
+import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 export default function Create() {
-  const [name, setName] = useState<string>();
-  const [price, setPrice] = useState<number>(0);
-  const [stock, setStock] = useState<number>(0);
-  const [imgProduct, setImgProduct] = useState<string>();
-  console.log(imgProduct);
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState(0);
+  const [stock, setStock] = useState(0);
+  const [imgProduct, setImgProduct] = useState("");
+
+  const createProduct = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (
+      !name ||
+      !price ||
+      isNaN(price) ||
+      price <= 0 ||
+      isNaN(stock) ||
+      stock < 0 ||
+      !imgProduct
+    ) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Invalid input. Please fill out all fields correctly.",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    try {
+      const response = await api.post("product/create", {
+        name,
+        price,
+        stock,
+        img_product: imgProduct,
+      });
+      console.log("Response:", response.data);
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Product successfully added.",
+        showConfirmButton: false,
+        timer: 1000,
+      });
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "An error occurred. Please try again later.",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    }
+  };
+
   return (
     <div className="border-[5px] p-4 border-[#9288F8] rounded-lg w-[90vw] h-[80vh] bg-[#322653] flex  justify-center">
       <div className="flex flex-col items-center  pt-6 sm:justify-center sm:pt-0 bg-gray-50 w-full rounded-md">
@@ -28,6 +78,7 @@ export default function Create() {
               </label>
               <div className="flex flex-col items-start">
                 <input
+                  placeholder="Nama Product"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   type="text"
@@ -89,6 +140,7 @@ export default function Create() {
             </div>
             <div className="flex items-center justify-center  mt-4">
               <button
+                onClick={(e) => createProduct(e)}
                 type="submit"
                 className="inline-flex items-center px-4 py-2 ml-4 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-900 border border-transparent rounded-md active:bg-gray-900 false"
               >
